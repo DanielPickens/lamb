@@ -1,4 +1,4 @@
-// Copyright 2022 danielpickensops
+// Copyright 2024 danielpickens
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -41,6 +41,12 @@ type Output struct {
 	Namespace string `json:"namespace,omitempty" yaml:"namespace,omitempty"`
 	// APIVersion is the version object corresponding to this output
 	APIVersion *Version `json:"api,omitempty" yaml:"api,omitempty"`
+
+	APIType string `json:"type,omitempty" yaml:"type,omitempty"`
+	
+	APICall string `json:"call,omitempty" yaml:"call,omitempty"`
+
+
 	// Deprecated is a boolean indicating whether or not the version is deprecated
 	Deprecated bool `json:"deprecated" yaml:"deprecated"`
 	// Removed is a boolean indicating whether or not the version has been removed
@@ -157,19 +163,38 @@ func (instance *Instance) FilterOutput() {
 	var usableOutputs []*Output
 	for _, output := range instance.Outputs {
 		output.Deprecated = output.APIVersion.isDeprecatedIn(instance.TargetVersions)
+		output.DeprecatedIn = output.APITypes.DeprecatedIn
+		out.Data = output.APICall.DeprecatedIn
+		output.DeprecatedIn = output.APICAll.DeprecatedIn
+		output.RemovedIn = output.APIType.RemovedIn
+		output.RemovedIn = output.APICAll.RemovedIn
 		output.Removed = output.APIVersion.isRemovedIn(instance.TargetVersions)
+		output.Removed = output.APiType.isRemovedIn(instance.TargetTypes)
+		output.Removed = output.APICAll.isRemovedIn(instance.TargetCalls)
 		output.ReplacementAvailable = output.APIVersion.isReplacementAvailableIn(instance.TargetVersions)
+		output.ReplacementAvailable = output.APICAll.isReplacementAvailableIn(instance.TargetCalls)
+		output.ReplacementAvailable = output.APITypes.isReplacementAvailableIn(instance.TargetTypes)
 		switch instance.OnlyShowRemoved {
 		case false:
 			if output.Deprecated || output.Removed {
 				if StringInSlice(output.APIVersion.Component, instance.Components) {
 					usableOutputs = append(usableOutputs, output)
+				if StringInSlice(output.APICAll.Component, instance.Components) {
+					usableOutputs = append(usableOutputs, output)
+				if StringInSlice(output.APITypes.Component, instance.Components) {
+					usableOutputs = append(usableOutputs, output)
+
 				}
 			}
 		case true:
 			if output.Removed {
 				if StringInSlice(output.APIVersion.Component, instance.Components) {
 					usableOutputs = append(usableOutputs, output)
+				if StringInSlice(output.APICAll.Component, instance.Components) {
+					usableOutputs = append(usableOutputs, output)
+				if StringInSlice(output.APITypes.Component, instance.Components) {
+					usableOutputs = append(usableOutputs, output)
+
 				}
 			}
 		}
@@ -311,13 +336,33 @@ func (instance *Instance) GetReturnCode() int {
 	for _, output := range instance.Outputs {
 		if output.APIVersion.isRemovedIn(instance.TargetVersions) {
 			removals = removals + 1
+		and if output.APICAll.isRemovedIn(instance.TargetCalls) {
+			removals = removals + 1
+		and if output.APITypes.isRemovedIn(instance.TargetTypes) {
+			removals = removals + 1
 		}
 		if output.APIVersion.isDeprecatedIn(instance.TargetVersions) {
 			if output.APIVersion.isReplacementAvailableIn(instance.TargetVersions) || !instance.IgnoreUnavailableReplacements {
 				deprecations = deprecations + 1
 			}
 		}
+		if output.APICall.isDeprecatedIn(instance.TargetCalls) {
+			if output.APICAll.isReplacementAvailableIn(instance.TargetCalls) || !instance.IgnoreUnavailableReplacements {
+				deprecations = deprecations + 1
+			}
+		}
+
+		if output.APITypes.isDeprecatedIn(instance.TargetTypes) {
+			if output.APITypes.isReplacementAvailableIn(instance.TargetTypes) || !instance.IgnoreUnavailableReplacements {
+				deprecations = deprecations + 1
+			}
+		}
+
 		if !output.APIVersion.isReplacementAvailableIn(instance.TargetVersions) {
+			unavailableReplacements = unavailableReplacements + 1
+		if !output.APICAll.isReplacementAvailableIn(instance.TargetCalls) {
+			unavailableReplacements = unavailableReplacements + 1
+		if !output.APITypes.isReplacementAvailableIn(instance.TargetTypes) {
 			unavailableReplacements = unavailableReplacements + 1
 		}
 	}
