@@ -5,9 +5,6 @@ import (
 	"log"
 	"os"
 	"time"
-
-	"Lamb/pkg/models"
-
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -26,6 +23,8 @@ func ConnectDatabase() {
 
 	dbURl := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", db_user, db_pass, db_hostname, db_port, db_name)
 
+	// pass the connection string to gorm.Open() to establish a connection and if there is an error, handle it
+	// retry 3 times before giving up
 	for i := 1; i <= 3; i++ {
 		database, err = gorm.Open(postgres.Open(dbURl), &gorm.Config{})
 		if err == nil {
