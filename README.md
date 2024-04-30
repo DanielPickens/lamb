@@ -3,7 +3,7 @@
 Lamb is a utility to help users find [deprecated Kubernetes apiTypes](https://k8s.io/docs/reference/using-api/deprecation-guide/) in their code repositories and their helm releases.
 
 ## Documentation
-Check out the [documentation at docs.danielpickens.com](https://github.com/danielpickens/lamb)
+Check out the [documentation at docs.danielpickens.com](https://github.com/DanielPickens/lamb/tree/master/docs)
 
 ## Purpose
 
