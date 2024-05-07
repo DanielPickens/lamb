@@ -1,0 +1,6 @@
+version: 2.1
+
+description: |
+  lamb is a utility to help users find deprecated Kubernetes apiCalls in their code repositories and their helm releases.
+display:
+  source_url: https://github.com/danielpickens/lamb
