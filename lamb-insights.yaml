@@ -1,0 +1,9 @@
+options:
+  organization: danielpickens-production
+  baseBranch: master
+  repositoryName: danielpickens/lamb
+
+# These images will be scanned for vulnerabilities.
+images:
+  docker:
+  - /danielpickens/lamb:$CIRCLE_SHA1
