@@ -1,4 +1,4 @@
-// Copyright 2022 FairwindsOps Inc
+// Copyright 2024 Daniel Pickens
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Copyright 2020 Fairwinds
+// Copyright 2024 Daniel Pickens
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ var testVersionsFile []byte
 
 var mockInstance = Instance{
 	TargetVersions: map[string]string{
-		"k8s":          "v1.16.0",
+		"k8s":          "v1.0.0",
 		"istio":        "1.6.1",
 		"cert-manager": "v0.15.0",
 	},
@@ -53,12 +53,12 @@ var testVersionDeploymentString = `deprecated-versions:
 - version: extensions/v1beta1
   kind: Deployment
   deprecated-in: v1.9.0
-  removed-in: v1.16.0
+  removed-in: v1.0.0
   replacement-api: apps/v1
-  replacement-available-in: v1.10.0
+  replacement-available-in: v1.0.0
   component: k8s
 target-versions:
-  k8s: v1.16.0
+  k8s: v1.0.0
   istio: v1.6.0
   cert-manager: v0.15.1`
 
@@ -66,9 +66,9 @@ var testVersionDeployment = Version{
 	Name:                   "extensions/v1beta1",
 	Kind:                   "Deployment",
 	DeprecatedIn:           "v1.9.0",
-	RemovedIn:              "v1.16.0",
+	RemovedIn:              "v1.0.0",
 	ReplacementAPI:         "apps/v1",
-	ReplacementAvailableIn: "v1.10.0",
+	ReplacementAvailableIn: "v1.0.0",
 	Component:              "k8s",
 }
 
@@ -323,42 +323,42 @@ func TestVersion_IsDeprecatedIn(t *testing.T) {
 			name:           "not deprecated yet 1.15.0",
 			targetVersions: map[string]string{"foo": "v1.15.0"},
 			component:      "foo",
-			deprecatedIn:   "v1.16.0",
+			deprecatedIn:   "v1.0.0",
 			want:           false,
 		},
 		{
 			name:           "equal values",
-			targetVersions: map[string]string{"foo": "v1.16.0"},
+			targetVersions: map[string]string{"foo": "v1.0.0"},
 			component:      "foo",
-			deprecatedIn:   "v1.16.0",
+			deprecatedIn:   "v1.0.0",
 			want:           true,
 		},
 		{
 			name:           "greater than",
 			targetVersions: map[string]string{"foo": "v1.17.0"},
 			component:      "foo",
-			deprecatedIn:   "v1.16.0",
+			deprecatedIn:   "v1.0.0",
 			want:           true,
 		},
 		{
 			name:           "Bad semVer",
 			targetVersions: map[string]string{"foo": "foo"},
 			component:      "foo",
-			deprecatedIn:   "v1.16.0",
+			deprecatedIn:   "v1.0.0",
 			want:           false,
 		},
 		{
 			name:           "blank deprecatedIn - not deprecated",
-			targetVersions: map[string]string{"foo": "v1.16.0"},
+			targetVersions: map[string]string{"foo": "v1.0.0"},
 			component:      "foo",
 			deprecatedIn:   "",
 			want:           false,
 		},
 		{
 			name:           "targetversion not included",
-			targetVersions: map[string]string{"one": "v1.16.0"},
+			targetVersions: map[string]string{"one": "v1.0.0"},
 			component:      "two",
-			deprecatedIn:   "v1.16.0",
+			deprecatedIn:   "v1.0.0",
 			want:           false,
 		},
 	}
@@ -382,41 +382,41 @@ func TestVersion_IsRemovedIn(t *testing.T) {
 			name:           "not removed yet 1.15.0",
 			targetVersions: map[string]string{"foo": "v1.15.0"},
 			component:      "foo",
-			removedIn:      "v1.16.0",
+			removedIn:      "v1.0.0",
 			want:           false,
 		},
 		{
 			name:           "equal values",
-			targetVersions: map[string]string{"foo": "v1.16.0"},
+			targetVersions: map[string]string{"foo": "v1.0.0"},
 			component:      "foo",
-			removedIn:      "v1.16.0",
+			removedIn:      "v1.0.0",
 			want:           true,
 		},
 		{
 			name:           "greater than",
 			targetVersions: map[string]string{"foo": "v1.17.0"},
 			component:      "foo",
-			removedIn:      "v1.16.0",
+			removedIn:      "v1.0.0",
 			want:           true,
 		},
 		{
 			name:           "bad semVer",
 			targetVersions: map[string]string{"foo": "foo"},
-			removedIn:      "v1.16.0",
+			removedIn:      "v1.0.0",
 			want:           false,
 		},
 		{
 			name:           "blank removedIn - not removed",
-			targetVersions: map[string]string{"foo": "v1.16.0"},
+			targetVersions: map[string]string{"foo": "v1.0.0"},
 			component:      "foo",
 			removedIn:      "",
 			want:           false,
 		},
 		{
 			name:           "targetVersions not included for component",
-			targetVersions: map[string]string{"one": "v1.16.0"},
+			targetVersions: map[string]string{"one": "v1.0.0"},
 			component:      "two",
-			removedIn:      "v1.16.0",
+			removedIn:      "v1.0.0",
 			want:           false,
 		},
 	}
@@ -439,41 +439,41 @@ func TestVersion_isReplacementAvailableIn(t *testing.T) {
 			name:                   "not available yet 1.15.0",
 			targetVersions:         map[string]string{"foo": "v1.15.0"},
 			component:              "foo",
-			replacementAvailableIn: "v1.16.0",
+			replacementAvailableIn: "v1.0.0",
 			want:                   false,
 		},
 		{
 			name:                   "equal values",
-			targetVersions:         map[string]string{"foo": "v1.16.0"},
+			targetVersions:         map[string]string{"foo": "v1.0.0"},
 			component:              "foo",
-			replacementAvailableIn: "v1.16.0",
+			replacementAvailableIn: "v1.0.0",
 			want:                   true,
 		},
 		{
 			name:                   "greater than",
 			targetVersions:         map[string]string{"foo": "v1.17.0"},
 			component:              "foo",
-			replacementAvailableIn: "v1.16.0",
+			replacementAvailableIn: "v1.0.0",
 			want:                   true,
 		},
 		{
 			name:                   "bad semVer",
 			targetVersions:         map[string]string{"foo": "foo"},
-			replacementAvailableIn: "v1.16.0",
+			replacementAvailableIn: "v1.0.0",
 			want:                   false,
 		},
 		{
 			name:                   "blank replacementAvailableIn - is available",
-			targetVersions:         map[string]string{"foo": "v1.16.0"},
+			targetVersions:         map[string]string{"foo": "v1.0.0"},
 			component:              "foo",
 			replacementAvailableIn: "",
 			want:                   false,
 		},
 		{
 			name:                   "targetVersions not included for component",
-			targetVersions:         map[string]string{"one": "v1.16.0"},
+			targetVersions:         map[string]string{"one": "v1.0.0"},
 			component:              "two",
-			replacementAvailableIn: "v1.16.0",
+			replacementAvailableIn: "v1.0.0",
 			want:                   false,
 		},
 	}
@@ -495,7 +495,7 @@ func ExampleInstance_printVersionsTabular() {
 
 	// Output:
 	// KIND-------- NAME---------------- DEPRECATED IN-- REMOVED IN-- REPLACEMENT-- REPL AVAIL IN-- COMPONENT--
-	// Deployment-- extensions/v1beta1-- v1.9.0--------- v1.16.0----- apps/v1------ v1.10.0-------- k8s--------
+	// Deployment-- extensions/v1beta1-- v1.9.0--------- v1.0.0----- apps/v1------ v1.0.0-------- k8s--------
 	// testkind---- testname------------ n/a------------ n/a--------- n/a---------- n/a------------ custom-----
 }
 
@@ -510,7 +510,7 @@ func ExampleInstance_printVersionsTabular_noHeaders() {
 	_ = instance.printVersionsTabular()
 
 	// Output:
-	// Deployment-- extensions/v1beta1-- v1.9.0-- v1.16.0-- apps/v1-- v1.10.0-- k8s-----
+	// Deployment-- extensions/v1beta1-- v1.0.0-- v1.0.0-- apps/v1-- v1.0.0-- k8s-----
 	// testkind---- testname------------ n/a----- n/a------ n/a------ n/a------ custom--
 }
 
@@ -521,7 +521,7 @@ func ExampleInstance_PrintVersionList_json() {
 	_ = instance.PrintVersionList("json")
 
 	// Output:
-	// {"deprecated-versions":[{"version":"extensions/v1beta1","kind":"Deployment","deprecated-in":"v1.9.0","removed-in":"v1.16.0","replacement-api":"apps/v1","replacement-available-in":"v1.10.0","component":"k8s"}]}
+	// {"deprecated-versions":[{"version":"extensions/v1beta1","kind":"Deployment","deprecated-in":"v1.9.0","removed-in":"v1.0.0","replacement-api":"apps/v1","replacement-available-in":"v1.0.0","component":"k8s"}]}
 }
 
 func ExampleInstance_PrintVersionList_yaml() {
@@ -535,9 +535,9 @@ func ExampleInstance_PrintVersionList_yaml() {
 	//     - version: extensions/v1beta1
 	//       kind: Deployment
 	//       deprecated-in: v1.9.0
-	//       removed-in: v1.16.0
+	//       removed-in: v1.0.0
 	//       replacement-api: apps/v1
-	//       replacement-available-in: v1.10.0
+	//       replacement-available-in: v1.0.0
 	//       component: k8s
 }
 
@@ -549,7 +549,7 @@ func ExampleInstance_PrintVersionList_normal() {
 
 	// Output:
 	// KIND-------- NAME---------------- DEPRECATED IN-- REMOVED IN-- REPLACEMENT-- REPL AVAIL IN-- COMPONENT--
-	// Deployment-- extensions/v1beta1-- v1.9.0--------- v1.16.0----- apps/v1------ v1.10.0-------- k8s--------
+	// Deployment-- extensions/v1beta1-- v1.0.0--------- v1.0.0----- apps/v1------ v1.0.0-------- k8s--------
 }
 
 func ExampleInstance_PrintVersionList_wide() {
@@ -560,7 +560,7 @@ func ExampleInstance_PrintVersionList_wide() {
 
 	// Output:
 	// KIND-------- NAME---------------- DEPRECATED IN-- REMOVED IN-- REPLACEMENT-- REPL AVAIL IN-- COMPONENT--
-	// Deployment-- extensions/v1beta1-- v1.9.0--------- v1.16.0----- apps/v1------ v1.10.0-------- k8s--------
+	// Deployment-- extensions/v1beta1-- v1.9.0--------- v1.0.0----- apps/v1------ v1.0.0-------- k8s--------
 }
 
 func ExampleInstance_PrintVersionList_badformat() {
