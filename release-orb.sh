@@ -10,10 +10,10 @@ command -v circleci >/dev/null 2>&1 || { echo >&2 "I require circleci but it's n
 echo "Found circleci command."
 
 cli_version=$(circleci version | cut -d+ -f1)
-required_version=0.1.5705
+required_version=0.1
 
 if version_gt "$required_version" "$cli_version"; then
-     echo "This script requires circleci version greater than or equal to 0.1.5705!"
+     echo "This script requires circleci version greater than or equal to 0.1!"
      exit 1
 fi
 
